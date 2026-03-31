@@ -29,7 +29,8 @@ app.add_middleware(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-MONGO_URL = "mongodb+srv://microexplore_user:Micro12345@cluster0.u5iicy8.mongodb.net/?retryWrites=true&w=majority"
+import os
+MONGO_URL = os.getenv("MONGO_URL")
 
 client = AsyncIOMotorClient(MONGO_URL)
 db = client["microexplore"]
