@@ -10,13 +10,17 @@ import Embedded from "./pages/Embedded";
 import Arduino from "./pages/Arduino";
 import STM32 from "./pages/STM32";
 import Resources from "./pages/Resources";
+import { useEffect, useState } from "react";
 
 function App() {
+  
+
   return (
     <div className="App min-h-screen flex flex-col">
       <BrowserRouter>
-      <ScrollToTop />
+        <ScrollToTop />
         <Navigation />
+
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -28,6 +32,7 @@ function App() {
             <Route path="/resources" element={<Resources />} />
           </Routes>
         </main>
+
         <Footer />
       </BrowserRouter>
     </div>
