@@ -6,6 +6,7 @@
 
 # Dependencies
 node_modules/
+.env
 /node_modules
 /.pnp
 .pnp.js
@@ -79,5 +80,5 @@ agenthub/agents/youtube/db
 # Mobile development
 android-sdk/
 
-.env
+
 
