@@ -10,8 +10,7 @@ import { SectionHeader } from '../components/shared/SectionHeader';
 import { YouTubeEmbed } from '../components/shared/YouTubeEmbed';
 import { Badge } from '../components/ui/badge';
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -22,18 +21,7 @@ import {
 } from "../components/ui/breadcrumb";
 
 export default function Resources() {
-  const BASE_URL = `http://${window.location.hostname}:8000`;
-  const [answers, setAnswers] = useState({});
-  const [question, setQuestion] = useState("");
-  const [faqs, setFaqs] = useState([]);
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
-  const userId =
-  localStorage.getItem("userId") ||
-  Math.random().toString(36).substring(2);
-
-localStorage.setItem("userId", userId);
-
-  
+    
   const books = [
     {
       title: 'Electronics',
@@ -175,59 +163,6 @@ localStorage.setItem("userId", userId);
       default: return 'bg-slate-100 text-slate-800';
     }
   };
-
-    // Fetch FAQs from backend
-  const fetchFaqs = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/api/faq`);
-      setFaqs(res.data);
-    } catch (error) {
-      console.error("Error fetching FAQs:", error);
-    }
-  };
-const submitAnswer = async (id, answer) => {
-  if (!answer) return;
-
-  try {
-    await axios.put(`${BASE_URL}/api/faq/${id}`, {
-      answer: answer,
-    });
-
-    setAnswers({});
-    fetchFaqs();
-  } catch (error) {
-    console.error("Error updating answer:", error);
-  }
-};
-
-
-  // Send question to backend
-  
-  const submitQuestion = async () => {
-  console.log("CLICKED");
-
-  if (!question.trim()) return;
-
-  try {
-    const res = await axios.post(`${BASE_URL}/api/faq`,  {
-  question: question,
-  answer: "",
-  userId: userId
-});
-
-    console.log("SUCCESS:", res.data);
-
-    setQuestion("");
-    fetchFaqs();
-  } catch (error) {
-    console.error("ERROR:", error);
-  }
-};
-
-  // Load FAQs when page opens
-  useEffect(() => {
-    fetchFaqs();
-  }, []);
 
   return (
     <div className="min-h-screen bg-[#f8fafc]" data-testid="resources-page">
@@ -449,106 +384,6 @@ const submitAnswer = async (id, answer) => {
               </a>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      
-      <section className="py-16 lg:py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <SectionHeader 
-            title="Ask a Question"
-            subtitle="Have doubts? Ask here and answers will be added soon."
-          />
-
-          {/* Input Box */}
-          <div className="flex gap-2 mb-6">
-            <input
-              type="text"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Type your question..."
-              className="flex-1 border border-slate-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#0ea5e9]"
-            />
-            <button
-
-            
-  onClick={submitQuestion}
-  className="bg-[#0ea5e9] text-white px-4 py-2 rounded-lg hover:bg-[#0284c7]"
->
-  Submit
-</button>
-          </div>
-
-          {/* FAQ List */}
-          <div className="space-y-4">
-            {faqs.length === 0 && (
-              <p className="text-sm text-[#64748b]">No questions yet. Be the first to ask!</p>
-            )}
-
-            {faqs.map((faq) => (
- <div
-  key={faq._id}
-  className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm"
->
-    <p className="font-semibold text-[#0f172a] mb-1">
-  Q: {faq.question}
-</p>
-    
-    <p className="text-[#334155] mb-3">
-  A: {faq.answer ? faq.answer : "Answer coming soon"}
-</p>
-
-{/* DELETE BUTTON */}
-{(faq.userId === userId || isAdmin) && (
-  <button
-    onClick={async () => {
-      try {
-  await axios.delete(`${BASE_URL}/api/faq/${faq._id}`);
-  fetchFaqs();
-} catch (error) {
-  console.error("Delete failed:", error);
-}
-      fetchFaqs();
-    }}
-    className="text-red-500 text-sm mb-2"
-  >
-    Delete
-  </button>
-)}
-
-
-    {/* Answer input (for professor) */}
-    {isAdmin && (
-  <div className="flex gap-2 mt-2">
-    <input
-      type="text"
-      placeholder="Write answer..."
-      value={answers[faq._id] || ""}
-      onChange={(e) =>
-        setAnswers({
-          ...answers,
-          [faq._id]: e.target.value
-        })
-      }
-      className="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0ea5e9]"
-    />
-
-    <button
-      disabled={!answers[faq._id]}
-      onClick={() => submitAnswer(faq._id, answers[faq._id])}
-      className="bg-[#0ea5e9] text-white px-3 py-2 rounded-lg text-sm hover:bg-[#0284c7] disabled:opacity-50"
-    >
-      Submit
-    </button>
-  </div>
-)}
-
-  </div>
-))}
-          </div>
-
         </div>
       </section>
 
